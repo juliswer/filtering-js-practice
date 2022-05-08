@@ -1,6 +1,8 @@
 const input = document.querySelector("#searchInput");
 const userList = document.querySelector("#users");
 
+let users = [];
+
 async function loadUsers() {
   const response = await fetch(
     "https://fakerapi.it/api/v1/users?_quantity=1000"
@@ -12,7 +14,7 @@ const createUserItems = (users) =>
   users
     .map(
       (user) => `
-    <li>
+    <li class="bg-zinc-800 hover:bg-zinc-700 hover:cursor-pointer">
         ${user.firstname} ${user.lastname}
     </li>
 `
@@ -25,10 +27,13 @@ function renderUsers(users) {
 }
 
 window.addEventListener("DOMContentLoaded", async () => {
+  userList.innerHTML = "<h1>Loading...</h1>";
   const data = await loadUsers();
-  renderUsers(data.data);
+  users = data.data;
+  renderUsers(users);
 });
 
 input.addEventListener("keyup", (e) => {
-  console.log(input.value);
+  const newUsers = users.filter((user) => `${user.firstname.toLowerCase()} ${user.lastname.toLowerCase()}`.includes(input.value));
+  renderUsers(newUsers)
 });
